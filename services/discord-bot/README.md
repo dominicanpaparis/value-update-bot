@@ -1,6 +1,8 @@
 # Discord Bot Starter
 
-A Node.js bot with `/ping` and `/help` slash commands, built with discord.js.
+A Node.js bot with `/ping`, `/help`, and `/supremeupdate` slash commands, built with discord.js.
+
+`/supremeupdate` posts a demo embed with a literal, non-notifying `@Supreme Updates` placeholder, a timestamp, and a link button. It does not fetch or include Supreme Values item data.
 
 ## Discord setup
 

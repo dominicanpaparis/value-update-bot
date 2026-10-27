@@ -39,7 +39,8 @@ A Node.js Discord bot starter with `/ping` and `/help` slash commands.
 ## Product
 
 - `/ping` reports gateway latency.
-- `/help` lists the starter commands.
+- `/help` lists the available commands.
+- `/supremeupdate` posts a demo update embed with no actual mention notifications and no scraped item data.
 
 ## User preferences
 

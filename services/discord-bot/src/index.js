@@ -2,6 +2,10 @@ import {
   Client,
   Events,
   GatewayIntentBits,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   MessageFlags,
 } from "discord.js";
 import { commands } from "./commands.js";
@@ -55,8 +59,45 @@ client.on(Events.InteractionCreate, async (interaction) => {
         content:
           "Available commands:\n" +
           "`/ping` — check the bot and gateway response time.\n" +
-          "`/help` — show this command list.",
+          "`/help` — show this command list.\n" +
+          "`/supremeupdate` — preview a Supreme Values update announcement.",
         flags: MessageFlags.Ephemeral,
+      });
+      return;
+    }
+
+    if (interaction.commandName === "supremeupdate") {
+      const now = new Date();
+      const timestamp = Math.floor(now.getTime() / 1000);
+      const embed = new EmbedBuilder()
+        .setColor(0x5865f2)
+        .setTitle("🔔 Supreme Values Update")
+        .setDescription("Supreme Values has received a new value update!")
+        .addFields(
+          {
+            name: "Demo ping",
+            value: "`@Supreme Updates` — placeholder only; no one is notified.",
+            inline: false,
+          },
+          {
+            name: "Updated",
+            value: `<t:${timestamp}:F>`,
+            inline: false,
+          },
+        )
+        .setTimestamp(now)
+        .setFooter({ text: "Supreme Update Tracker • Daylight" });
+
+      const button = new ButtonBuilder()
+        .setLabel("View Supreme Values")
+        .setStyle(ButtonStyle.Link)
+        .setURL("https://supremevalues.com");
+      const actionRow = new ActionRowBuilder().addComponents(button);
+
+      await interaction.reply({
+        embeds: [embed],
+        components: [actionRow],
+        allowedMentions: { parse: [] },
       });
     }
   } catch (error) {

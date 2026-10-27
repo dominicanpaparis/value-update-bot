@@ -9,4 +9,8 @@ export const commands = [
     .setName("help")
     .setDescription("Show the available bot commands.")
     .toJSON(),
+  new SlashCommandBuilder()
+    .setName("supremeupdate")
+    .setDescription("Preview a Supreme Values update announcement.")
+    .toJSON(),
 ];
