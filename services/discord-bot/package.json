@@ -1,0 +1,14 @@
+{
+  "name": "@workspace/discord-bot",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env src/index.js",
+    "start": "node src/index.js",
+    "check": "node --check src/commands.js && node --check src/index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.27.0"
+  }
+}
