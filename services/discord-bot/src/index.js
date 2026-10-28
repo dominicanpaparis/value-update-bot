@@ -7,8 +7,14 @@ import {
   ButtonBuilder,
   ButtonStyle,
   MessageFlags,
+  PermissionFlagsBits,
 } from "discord.js";
 import { commands } from "./commands.js";
+import { startUpdateMonitor } from "./update-monitor.js";
+import {
+  buildValueUpdateEmbeds,
+  createDemoChanges,
+} from "./update-formatter.js";
 
 const token = process.env.DISCORD_BOT_TOKEN;
 
@@ -39,7 +45,10 @@ client.once(Events.ClientReady, async (readyClient) => {
     console.error("Failed to register slash commands:", error);
     await readyClient.destroy();
     process.exitCode = 1;
+      return;
   }
+
+    startUpdateMonitor();
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -60,8 +69,36 @@ client.on(Events.InteractionCreate, async (interaction) => {
           "Available commands:\n" +
           "`/ping` — check the bot and gateway response time.\n" +
           "`/help` — show this command list.\n" +
-          "`/supremeupdate` — preview a Supreme Values update announcement.",
+          "`/supremeupdate` — preview a Supreme Values update announcement.\n" +
+          "`/testupdate` — preview fake value changes privately.",
         flags: MessageFlags.Ephemeral,
+      });
+      return;
+    }
+
+    if (interaction.commandName === "testupdate") {
+      const configuredGuildId = process.env.DISCORD_GUILD_ID?.trim();
+      const canPreview =
+        interaction.inGuild() &&
+        interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild) &&
+        (!configuredGuildId || interaction.guildId === configuredGuildId);
+
+      if (!canPreview) {
+        await interaction.reply({
+          content:
+            "This preview is limited to server managers in the configured test server.",
+          flags: MessageFlags.Ephemeral,
+          allowedMentions: { parse: [] },
+        });
+        return;
+      }
+
+      await interaction.reply({
+        embeds: buildValueUpdateEmbeds(createDemoChanges(), {
+          preview: true,
+        }),
+        flags: MessageFlags.Ephemeral,
+        allowedMentions: { parse: [] },
       });
       return;
     }

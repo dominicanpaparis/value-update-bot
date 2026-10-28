@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --env-file-if-exists=.env src/index.js",
     "start": "node src/index.js",
-    "check": "node --check src/commands.js && node --check src/index.js"
+    "check": "for file in src/*.js; do node --check \"$file\" || exit 1; done",
+    "test": "node --test src/*.test.js"
   },
   "dependencies": {
     "discord.js": "^14.27.0"

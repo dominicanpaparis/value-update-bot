@@ -1,4 +1,8 @@
-import { SlashCommandBuilder } from "discord.js";
+import {
+  InteractionContextType,
+  PermissionFlagsBits,
+  SlashCommandBuilder,
+} from "discord.js";
 
 export const commands = [
   new SlashCommandBuilder()
@@ -12,5 +16,11 @@ export const commands = [
   new SlashCommandBuilder()
     .setName("supremeupdate")
     .setDescription("Preview a Supreme Values update announcement.")
+    .toJSON(),
+  new SlashCommandBuilder()
+    .setName("testupdate")
+    .setDescription("Preview a fake value update without posting publicly.")
+    .setContexts(InteractionContextType.Guild)
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .toJSON(),
 ];

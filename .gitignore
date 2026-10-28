@@ -21,6 +21,7 @@ node_modules
 services/discord-bot/.env
 services/discord-bot/.env.*
 !services/discord-bot/.env.example
+services/discord-bot/data/
 
 # IDEs and editors
 /.idea
