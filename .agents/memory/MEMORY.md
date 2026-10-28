@@ -1,0 +1,1 @@
+- [Automatic MM2 update bot](automatic-mm2-updates.md) — The target is duplicate-free Discord announcements for value changes, with per-item emojis and no real ping during development.
