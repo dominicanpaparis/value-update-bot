@@ -24,7 +24,7 @@ function logError(logger, error) {
     return;
   }
 
-  logger.error?.("RBLXValue update check failed; it will retry on the next interval.");
+  logger.error?.("RBLXValue update check failed:", error);
 }
 
 export async function fetchCurrentSnapshot(api, expectedTotalFromMeta = null) {
@@ -64,7 +64,7 @@ export async function fetchCurrentSnapshot(api, expectedTotalFromMeta = null) {
     const normalizedPage = normalizeApiItems(page.items);
     for (const item of normalizedPage) {
       if (seenSlugs.has(item.slug)) {
-        throw new Error("RBLXValue pagination returned a duplicate slug.");
+        continue;
       }
       seenSlugs.add(item.slug);
       items.push(item);
@@ -161,8 +161,7 @@ export function startUpdateMonitor({
   apiKey = process.env.RBLXVALUE_API_KEY,
   logger = console,
   store = createSnapshotStore(),
-} = {}) {
-  if (!apiKey) {
+} if (!apiKey) {
     logger.error?.(
       "RBLXVALUE_API_KEY is missing; automatic detection is disabled. The Discord bot will continue running.",
     );
