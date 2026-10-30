@@ -21,3 +21,4 @@ export function createDemoChanges(){return [
  {slug:"demo-stability",name:"Example Stability Item",changes:[{type:"stability_changed",from:"Stable",to:"Fluctuating"}]},
  {slug:"demo-new",name:"Example New Item",changes:[{type:"newly_added",from:null,to:1450}]},
 ];}
+
