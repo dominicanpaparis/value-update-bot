@@ -1,26 +1,6 @@
-import {
-  InteractionContextType,
-  PermissionFlagsBits,
-  SlashCommandBuilder,
-} from "discord.js";
-
+import { InteractionContextType, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 export const commands = [
-  new SlashCommandBuilder()
-    .setName("ping")
-    .setDescription("Check whether the bot is responsive.")
-    .toJSON(),
-  new SlashCommandBuilder()
-    .setName("help")
-    .setDescription("Show the available bot commands.")
-    .toJSON(),
-  new SlashCommandBuilder()
-    .setName("supremeupdate")
-    .setDescription("Preview a Supreme Values update announcement.")
-    .toJSON(),
-  new SlashCommandBuilder()
-    .setName("testupdate")
-    .setDescription("Preview a fake value update without posting publicly.")
-    .setContexts(InteractionContextType.Guild)
-    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-    .toJSON(),
+ new SlashCommandBuilder().setName("ping").setDescription("Check whether the bot is responsive.").toJSON(),
+ new SlashCommandBuilder().setName("help").setDescription("Show the available bot commands.").toJSON(),
+ new SlashCommandBuilder().setName("testupdate").setDescription("Preview a fake value update without posting publicly.").setContexts(InteractionContextType.Guild).setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild).toJSON(),
 ];
