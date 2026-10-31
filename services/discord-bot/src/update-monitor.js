@@ -30,49 +30,21 @@ function logError(logger, error) {
   logger.error?.("RBLXValue update check failed:", error);
 }
 
-export async function fetchCurrentSnapshot(
-  api,
-  expectedTotalFromMeta = null,
-) {
+export async function fetchCurrentSnapshot(api) {
   const items = [];
   const seen = new Set();
 
   let offset = 0;
-  let expected = expectedTotalFromMeta;
-  let fetchedCount = 0;
-  let finished = false;
 
   for (let pageNumber = 0; pageNumber < MAX_ITEMS_PAGES; pageNumber++) {
-    if (expected !== null && fetchedCount >= expected) {
-      finished = true;
-      break;
-    }
-
     const page = await api.getItemsPage({
       limit: ITEMS_PAGE_SIZE,
       offset,
     });
 
-    if (
-      expected === null &&
-      Number.isInteger(page.totalItems) &&
-      page.totalItems >= 0
-    ) {
-      expected = page.totalItems;
-    }
-
     if (page.items.length === 0) {
-      if (expected !== null && fetchedCount < expected) {
-        throw new Error(
-          "RBLXValue item pagination ended before the reported total.",
-        );
-      }
-
-      finished = true;
-      break;
+      return items;
     }
-
-    fetchedCount += page.items.length;
 
     for (const item of normalizeApiItems(page.items)) {
       if (seen.has(item.slug)) continue;
@@ -83,39 +55,12 @@ export async function fetchCurrentSnapshot(
 
     offset += page.items.length;
 
-    if (expected !== null && fetchedCount > expected) {
-      throw new Error(
-        "RBLXValue returned more items than its reported total.",
-      );
-    }
-
-    if (expected === null && page.items.length < ITEMS_PAGE_SIZE) {
-      finished = true;
-      break;
-    }
-
-    if (
-      expected !== null &&
-      fetchedCount < expected &&
-      page.items.length < ITEMS_PAGE_SIZE
-    ) {
-      throw new Error(
-        "RBLXValue item pagination returned an incomplete snapshot.",
-      );
+    if (page.items.length < ITEMS_PAGE_SIZE) {
+      return items;
     }
   }
 
-  if (!finished) {
-    throw new Error("RBLXValue pagination exceeded the page safety limit.");
-  }
-
-  if (expected !== null && fetchedCount < expected) {
-    throw new Error(
-      "RBLXValue item pagination did not reach the reported total.",
-    );
-  }
-
-  return items;
+  throw new Error("RBLXValue pagination exceeded the page safety limit.");
 }
 
 export async function runUpdateCheck({
@@ -134,7 +79,14 @@ export async function runUpdateCheck({
     };
   }
 
-  const items = await fetchCurrentSnapshot(api, meta.totalItems);
+  const items = await fetchCurrentSnapshot(api);
+
+  if (items.length === 0) {
+    throw new Error(
+      "RBLXValue returned an empty item snapshot; refusing to save it.",
+    );
+  }
+
   const confirmed = await api.getMeta();
 
   if (confirmed.lastUpdated !== meta.lastUpdated) {
